@@ -39,7 +39,7 @@ func (r *mutationResolver) CreateLink(ctx context.Context, input model.NewLink) 
 
 	hasher := sha256.New()
 	hasher.Write([]byte(input.URL))
-	shorten := base64.URLEncoding.EncodeToString(hasher.Sum(nil))[0:3]
+	shorten := base64.URLEncoding.EncodeToString(hasher.Sum(nil))[0:5]
 
 	link := &model.Link{
 		ID: fmt.Sprintf("T%d", rand.Int()),
