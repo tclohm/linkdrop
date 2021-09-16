@@ -1,7 +1,7 @@
 type Link {
   id: ID!
   url: String!
-  short: String!
+  hash: String!
 }
 
 type Query {

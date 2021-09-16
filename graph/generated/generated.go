@@ -44,9 +44,9 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Link struct {
-		ID    func(childComplexity int) int
-		Short func(childComplexity int) int
-		URL   func(childComplexity int) int
+		Hash func(childComplexity int) int
+		ID   func(childComplexity int) int
+		URL  func(childComplexity int) int
 	}
 
 	Mutation struct {
@@ -80,19 +80,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	_ = ec
 	switch typeName + "." + field {
 
+	case "Link.hash":
+		if e.complexity.Link.Hash == nil {
+			break
+		}
+
+		return e.complexity.Link.Hash(childComplexity), true
+
 	case "Link.id":
 		if e.complexity.Link.ID == nil {
 			break
 		}
 
 		return e.complexity.Link.ID(childComplexity), true
-
-	case "Link.short":
-		if e.complexity.Link.Short == nil {
-			break
-		}
-
-		return e.complexity.Link.Short(childComplexity), true
 
 	case "Link.url":
 		if e.complexity.Link.URL == nil {
@@ -192,7 +192,7 @@ var sources = []*ast.Source{
 	{Name: "graph/schema.graphqls", Input: `type Link {
   id: ID!
   url: String!
-  short: String!
+  hash: String!
 }
 
 type Query {
@@ -367,7 +367,7 @@ func (ec *executionContext) _Link_url(ctx context.Context, field graphql.Collect
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Link_short(ctx context.Context, field graphql.CollectedField, obj *model.Link) (ret graphql.Marshaler) {
+func (ec *executionContext) _Link_hash(ctx context.Context, field graphql.CollectedField, obj *model.Link) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -385,7 +385,7 @@ func (ec *executionContext) _Link_short(ctx context.Context, field graphql.Colle
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Short, nil
+		return obj.Hash, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1731,8 +1731,8 @@ func (ec *executionContext) _Link(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "short":
-			out.Values[i] = ec._Link_short(ctx, field, obj)
+		case "hash":
+			out.Values[i] = ec._Link_hash(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}

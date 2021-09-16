@@ -3,9 +3,9 @@
 package model
 
 type Link struct {
-	ID    string `json:"id"`
-	URL   string `json:"url"`
-	Short string `json:"short"`
+	ID   string `json:"id"`
+	URL  string `json:"url"`
+	Hash string `json:"hash"`
 }
 
 type NewLink struct {
