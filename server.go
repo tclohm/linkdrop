@@ -23,6 +23,7 @@ func handleRequests() {
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/api", Up)
 	router.HandleFunc("/new", createNewLink)
+	router.HandleFunc("/{hash}", redirect)
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
 
@@ -36,16 +37,6 @@ func createNewLink(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
-	
-	// vars := mux.Vars(r)
-	// url := vars["url"]
-
-	// for _, link := range hashed {
-	// 	fmt.Println(link)
-	// 	if link.Url == url {
-	// 		json.NewEncoder(w).Encode(link)
-	// 	}
-	// }
 
 	body, err := ioutil.ReadAll(r.Body)
 
@@ -64,6 +55,18 @@ func createNewLink(w http.ResponseWriter, r *http.Request) {
 	hashed = append(hashed, link)
 
 	json.NewEncoder(w).Encode(link)
+}
+
+func redirect(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	key := vars["hash"]
+
+	for _, link := range hashed {
+		if link.Hash == key {
+			fmt.Println("found!")
+			http.Redirect(w, r, link.Url, 307)
+		}
+	}
 }
 
 func main() {
