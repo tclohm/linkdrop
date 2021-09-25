@@ -41,7 +41,7 @@ func createNewLink(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 
 	if err != nil {
-		log.Fatal("error", err)
+		log.Fatal("error!", err)
 	}
 
 	var link Link
